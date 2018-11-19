@@ -970,6 +970,13 @@ function bmhDSNRules($dsn_msg, $dsn_report, $debug_mode = false)
         elseif (preg_match('/not unique.\s+Several matches found/i', $diag_code)) {
           $result['rule_cat'] = 'unknown';
           $result['rule_no'] = '0255';
+        } /* rule: unknown
+         * sample:
+         *   Diagnostic-Code: smtp;550 5.1.1 RESOLVER.ADR.RecipNotFound; not found
+         */
+         elseif (preg_match('/resolver.adr.recipnotfound/i', $diag_code)) {
+          $result['rule_cat'] = 'unknown';
+          $result['rule_no'] = '9999';
         } /* rule: inactive
          * sample:
          *   Diagnostic-Code: SMTP; 550 <xxxxx@yourdomain.com>: inactive user
