@@ -392,17 +392,17 @@ class BounceMailHandler
           }
 
           \imap_expunge($mboxd);
-          \imap_close($mboxd);
+          $this->safe_imap_close($mboxd);
         }
       }
 
-      \imap_close($mboxt);
+      $this->safe_imap_close($mboxt);
 
       return true;
 
     }
 
-    \imap_close($mboxt);
+    $this->safe_imap_close($mboxt);
 
     return false;
   }
@@ -655,7 +655,7 @@ class BounceMailHandler
 
     /** @noinspection PhpUsageOfSilenceOperatorInspection */
     @\imap_expunge($this->mailboxLink);
-    \imap_close($this->mailboxLink);
+    $this->safe_imap_close($this->mailboxLink);
 
     $this->output('Read: ' . $fetchedCount . ' messages');
     $this->output($processedCount . ' action taken');
@@ -912,18 +912,25 @@ class BounceMailHandler
       if ($mailboxFound === false && $create) {
         /** @noinspection PhpUsageOfSilenceOperatorInspection */
         @\imap_createmailbox($mbox, \imap_utf7_encode('{' . $this->mailhost . ':' . $port . '}' . $mailbox));
-        \imap_close($mbox);
+        $this->safe_imap_close($mbox);
 
         return true;
       }
 
-      \imap_close($mbox);
+      $this->safe_imap_close($mbox);
 
       return false;
     }
 
-    \imap_close($mbox);
+    $this->safe_imap_close($mbox);
 
     return false;
+  }
+
+  public function safe_imap_close($mbox)
+  {
+    \imap_alerts();
+    \imap_errors();
+    \imap_close($mbox);
   }
 }
